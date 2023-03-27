@@ -1,71 +1,98 @@
 from tkinter import *
-from tkinter import messagebox
-import sqlite3
-import main
+import check_in_ui
+import check_out
+import get_info
+import customer_info
+import payment_ui
+import room_service_ui
+import feedback_ui
+import os
 
-class PaymentUI:
+
+class Hotel:
     def _init_(self, root):
         self.root = root
-        self.root.title("Payment")
-        pad=3
+        pad = 3
+        self.root.title("HOTEL MANAGEMENT SYSTEM")
         self.root.geometry(
             "{0}x{1}+0+0".format(self.root.winfo_screenwidth() - pad, self.root.winfo_screenheight() - pad))
 
-        # Create payment label
-        payment_label = Label(self.root, text="Enter payment information:", font=("Arial", 16))
-        payment_label.pack(pady=10)
+        # create mainframe to add message
+        top = Frame(self.root)
+        top.pack(side="top", fill=BOTH)
 
-        # Create name label and entry
-        name_label = Label(self.root, text="Name:", font=("Arial", 12))
-        name_label.pack()
-        self.name_entry = Entry(self.root, font=("Arial", 12))
-        self.name_entry.pack()
+        # create frame to add buttons
+        bottom = Frame(self.root)
+        bottom.pack(side="top")
 
-        # Create amount label and entry
-        amount_label = Label(self.root, text="Amount:", font=("Arial", 12))
-        amount_label.pack()
-        self.amount_entry = Entry(self.root, font=("Arial", 12))
-        self.amount_entry.pack()
-
-        # Create submit button
-        submit_button = Button(self.root, text="Submit", font=("Arial", 12), command=self.submit_payment)
-        submit_button.pack(pady=10)
-
-        # Connect to database and create table if it doesn't exist
-        self.conn = sqlite3.connect('Hotel.db')
-        self.c = self.conn.cursor()
-        self.c.execute('''CREATE TABLE IF NOT EXISTS payments
-                          (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                           name TEXT,
-                           amount INTEGER)''')
-        self.conn.commit()
-
-        self.root.mainloop()
-
-    def submit_payment(self):
-        # Get name and amount from entries
-        name = self.name_entry.get()
-        amount = self.amount_entry.get()
-
-        # Add payment to database
-        self.c.execute("INSERT INTO payments (name, amount) VALUES (?, ?)", (name, amount))
-        self.conn.commit()
-
-        # Show success message
-        success_message = f"Payment of {amount} received from {name}"
-        messagebox.showinfo("Payment Successful", success_message)
-
-        # Clear entries
-        self.name_entry.delete(0, END)
-        self.amount_entry.delete(0, END)
-
-    def _del_(self):
-        # Close database connection when object is deleted
-        self.conn.close()
+        
+        # create feedback button
+        self.feedback_button = Button(top, text="FEEDBACK", font=('', 20), bg="#15d3ba", relief=RIDGE, height=2,
+                                      width=15, fg="black", anchor="center",
+                                      command=feedback_ui.feedback_ui_fun)
+        self.feedback_button.pack(side="right", padx=10, pady=10)
 
 
-# Run payment UI
-def payment_ui_fun():
+
+        # display message
+        self.label = Label(top, font=('arial', 50, 'bold'), text="                WELCOME", fg="#15d3ba", anchor="center")
+        self.label.pack(side=TOP, fill=X, padx=5, pady=5)
+
+        # create check in button
+        self.check_in_button = Button(bottom, text="CHECK IN", font=('', 20), bg="#15d3ba", relief=RIDGE, height=2,
+                                      width=50,
+                                      fg="black", anchor="center",
+                                      command=check_in_ui.check_in_ui_fun)  # call check_in_ui_fun from check_in_ui.py file
+        self.check_in_button.grid(row=0, column=2, padx=5, pady=5)
+
+        # create check out button
+        self.check_out_button = Button(bottom, text="CHECK OUT", font=('', 20), bg="#15d3ba", relief=RIDGE, height=2,
+                                       width=50, fg="black", anchor="center",
+                                       command=check_out.check_out_ui)  # call check_out_ui function from check_out.py file
+        self.check_out_button.grid(row=1, column=2, padx=5, pady=5)
+
+        # create show list button
+        self.room_info_button = Button(bottom, text="INFORMATION OF ROOMS", font=('', 20), bg="#15d3ba", relief=RIDGE,
+                                       height=2,
+                                       width=50, fg="black", anchor="center",
+                                       command=get_info.get_info_ui)  # call get_info_ui function from get_info.py file
+        self.room_info_button.grid(row=2, column=2, padx=5, pady=5)
+
+        # create get information of all the guest
+        self.get_info_button = Button(bottom, text="INFORMATION OF ALL GUEST", font=('', 20), bg="#15d3ba",
+                                      relief=RIDGE,
+                                      height=2, width=50, fg="black", anchor="center",
+                                      command=customer_info.customer_info_ui)
+        # call customer_info_ui function from customer_info.py file
+        self.get_info_button.grid(row=3, column=2, padx=5, pady=5)
+
+
+        # Add the following button to the Hotel class
+        self.payment_button = Button(bottom, text="MAKE PAYMENT", font=('', 20), bg="#15d3ba",
+                                      relief=RIDGE,
+                                      height=2, width=50, fg="black", anchor="center",
+                                      command=payment_ui.payment_ui_fun)
+        self.payment_button.grid(row=4, column=2, padx=5, pady=5)
+
+        # Add the following button to the Hotel class
+        self.room_service_button = Button(bottom, text="ROOM SERVICE", font=('', 20), bg="#15d3ba",
+                                      relief=RIDGE,
+                                      height=2, width=50, fg="black", anchor="center",
+                                      command=room_service_ui.room_service_ui_fun)
+        self.room_service_button.grid(row=5, column=2, padx=5, pady=5)
+
+        # button to exit the program
+        self.exit_button = Button(bottom, text="EXIT", font=('', 20), bg="#15d3ba", relief=RIDGE, height=2, width=50,
+                                  fg="black",
+                                  anchor="center", command=quit)
+        self.exit_button.grid(row=6, column=2, padx=5, pady=5)
+
+
+def home_ui():
     root = Tk()
-    application = PaymentUI(root)
-    root.mainloop()
+    application = Hotel(root)
+    root.mainloop()
+
+
+if _name_ == '_main_':
+    home_ui()
