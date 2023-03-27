@@ -4,7 +4,7 @@ import sqlite3
 import main
 
 class PaymentUI:
-    def _init_(self, root):
+    def __init__(self, root):
         self.root = root
         self.root.title("Payment")
         pad=3
@@ -59,7 +59,7 @@ class PaymentUI:
         self.name_entry.delete(0, END)
         self.amount_entry.delete(0, END)
 
-    def _del_(self):
+    def __del__(self):
         # Close database connection when object is deleted
         self.conn.close()
 
@@ -68,4 +68,4 @@ class PaymentUI:
 def payment_ui_fun():
     root = Tk()
     application = PaymentUI(root)
-    root.mainloop()
+    root.mainloop()
